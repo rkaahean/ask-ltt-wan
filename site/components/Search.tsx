@@ -4,9 +4,18 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
+interface SearchResults {
+    summary?: string,
+    references?: {
+        id: string,
+        line: string,
+        timestamp: number,
+    }[]
+}
+
 export const Search = () => {
     const [query, setQuery] = useState<string>("");
-    const [results, setResults] = useState<SearchResults[]>([]);
+    const [results, setResults] = useState<SearchResults>({});
 
     const handleSearchQuery = async () => {
         // create a query to the API route
@@ -20,7 +29,6 @@ export const Search = () => {
         setResults(response);
     };
 
-    console.log(results);
     return (
         <div className="flex flex-col w-1/2 items-center justify-center">
             <div className="flex flex-row w-full items-center justify-center gap-3">
@@ -36,24 +44,12 @@ export const Search = () => {
     );
 };
 
-const SearchResults = ({ results }: { results: SearchResults[] }) => {
+const SearchResults = ({ results }: { results: SearchResults }) => {
+    const summaryLines = results.summary?.split(" - ");
     return (
         <div className="flex flex-col w-full gap-3">
-            {results.map((result) => (
-                <div className="flex flex-col w-full gap-3" key={result.id}>
-                    <div>{result.meta.line}</div>
-                    <div>{result.id}</div>
-                </div>
-            ))}
+            {summaryLines?.map(line => <div key={line}>{line}</div>)}
         </div>
     );
 };
 
-interface SearchResults {
-    id: number;
-    meta: {
-        line: string;
-        start_time: number;
-    };
-    embedding: number[];
-}
