@@ -8,7 +8,11 @@ datasource db {
 }
 
 model docs {
-  id        Int                    @id @default(autoincrement())
-  embedding Unsupported("vector")?
-  meta      Json?                  @db.Json
+  id         Int                    @id @default(autoincrement())
+  embedding  Unsupported("vector")?
+  line       String?                @db.VarChar
+  meta       Json?                  @db.Json
+  video_url  String?                @db.VarChar
+  timestamp  Float?
+  created_at String?                @default(dbgenerated("now()")) @db.VarChar
 }
