@@ -62,6 +62,7 @@ export const getNearestNeighbors = async (
       embedding::text, 
       meta, 
       line, 
+      video_url,
       timestamp, 
       created_at 
     FROM 
@@ -90,6 +91,7 @@ export const getAdditionalNeighbours = async (
             meta,
             line,
             timestamp,
+            video_url,
             created_at
           FROM
             docs
@@ -106,7 +108,7 @@ export const getAdditionalNeighbours = async (
 
 export const getQuerySummary = async (neighbors: Neighbour[]) => {
   // concat all the lines in neighbours
-  const lines = neighbors.map((n) => n.meta.line).join("\n");
+  const lines = neighbors.map((n) => n.line).join("\n");
   try {
     const config = new Configuration({
       apiKey: process.env.OPENAI_KEY as string,
@@ -119,8 +121,7 @@ export const getQuerySummary = async (neighbors: Neighbour[]) => {
       messages: [
         {
           role: "system",
-          content:
-            "You are a bot that provides a detailed summary of the conversation from the WAN Show podcast with snippets of the conversation provided as context.",
+          content: "Provide a summary of the content below.",
         },
         { role: "user", content: lines },
         {

@@ -10,6 +10,7 @@ interface SearchResults {
     id: string;
     line: string;
     timestamp: number;
+    video_url: string;
   }[];
 }
 
@@ -46,12 +47,23 @@ export const Search = () => {
 
 const SearchResults = ({ results }: { results: SearchResults }) => {
   const summaryLines = results.summary?.split("$SEP");
-  console.log("Summary lines", summaryLines);
+  const references = results.references;
   return (
     <div className="flex flex-col w-full gap-3">
       {summaryLines?.map((line) => (
-        <div key={line}>{line}</div>
+        <div>{line}</div>
+      ))}
+      {references?.map((ref) => (
+        <div key={ref.id}>
+          <div>{ref.line}</div>
+          <a href={getVideoUrl(ref.video_url, ref.timestamp)}>Youtube Link</a>
+        </div>
       ))}
     </div>
   );
+};
+
+const getVideoUrl = (url: string, timestamp: number) => {
+  const roundedTimestamp = Math.floor(timestamp);
+  return `${url}&t=${roundedTimestamp}`;
 };
