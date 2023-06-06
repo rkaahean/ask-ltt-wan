@@ -54,7 +54,8 @@ export const getEmbedding = async (line: string) => {
 };
 
 export const getNearestNeighbors = async (
-  embedding: number[]
+  embedding: number[],
+  similarity: number
 ): Promise<Neighbour[]> => {
   const neighbors: Neighbour[] = await prisma.$queryRaw`
     SELECT 
@@ -67,7 +68,7 @@ export const getNearestNeighbors = async (
       created_at 
     FROM 
       docs 
-    ORDER BY 1 - (embedding <=> ${embedding}::vector) DESC LIMIT 2
+    ORDER BY 1 - (embedding <=> ${embedding}::vector) DESC LIMIT ${similarity}
   `;
   return neighbors;
 };
@@ -96,8 +97,7 @@ export const getAdditionalNeighbours = async (
           FROM
             docs
           WHERE
-            id = ${neighbour.id + 1}
-            OR id = ${neighbour.id - 1}
+            id = ${neighbour.id - 1}
           `
     );
     additionalNeighbours.push(...contextNeighbours);
@@ -113,20 +113,17 @@ export const getQuerySummary = async (neighbors: Neighbour[]) => {
     const config = new Configuration({
       apiKey: process.env.OPENAI_KEY as string,
     });
-
+    console.log("Summarizing...", lines);
     const openai = new OpenAIApi(config);
     // ask chat gpt about query
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [
-        {
-          role: "system",
-          content: "Provide a summary of the content below.",
-        },
         { role: "user", content: lines },
         {
           role: "user",
-          content: "Delimit each topic with $SEP. THIS IS VERY IMPORTANT.",
+          content:
+            "Provide a summary of the content below. Delimit each topic with $SEP. THIS IS VERY IMPORTANT.",
         },
       ],
     });

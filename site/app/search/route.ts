@@ -1,17 +1,27 @@
-import { NextResponse } from "next/server";
-import { getEmbedding, getNearestNeighbors, getQuerySummary } from "../page";
+import { NextRequest, NextResponse } from "next/server";
+import {
+  getAdditionalNeighbours,
+  getEmbedding,
+  getNearestNeighbors,
+  getQuerySummary,
+} from "../page";
+import { SearchQuery } from "@/components/Search";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   // search by getting embeddings and then the nearest neighbours
 
-  const { query } = await request.json();
+  // add SearchParams type to NextRequest
+  const { query }: { query: SearchQuery } = await request.json();
   try {
     // get embedding for line
     console.log("Getting embedding...");
-    const embedding = (await getEmbedding(query)) as number[];
+    const embedding = (await getEmbedding(query.query)) as number[];
     // get nearest neighbors
     console.log("Getting neighbours...");
-    let nearestNeighbors = await getNearestNeighbors(embedding);
+    let nearestNeighbors = await getNearestNeighbors(
+      embedding,
+      query.similarity
+    );
     // get more context around the lines just recevied
     console.log("Getting additional neighbours...");
     // nearestNeighbors = await getAdditionalNeighbours(nearestNeighbors);
