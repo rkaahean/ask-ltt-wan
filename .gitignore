@@ -1,6 +1,8 @@
 .env
 
 # for now, don't commit the data
-preprocess/output.wav
-preprocess/original.m4a
-preprocess/embeddings.npy 
+preprocess/*
+
+# ignore all the audio files except the json
+data/*
+!data/videos.json
