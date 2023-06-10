@@ -27,7 +27,7 @@ export default async function Home() {
         "my-5"
       )}
     >
-      <div className="text-4xl">Ask LTT WAN</div>
+      <div className="text-4xl mb-10">Ask LTT WAN</div>
       <Search />
     </main>
   );
@@ -120,12 +120,16 @@ export const getQuerySummary = async (neighbors: Neighbour[]) => {
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [
-        { role: "user", content: lines },
+        {
+          role: "system",
+          content:
+            "You are a bot that provides information regarding the WAN show from the Linus Tech Tips channel on YouTube.",
+        },
         {
           role: "user",
-          content:
-            "Provide a summary of the content below. Delimit each topic with $SEP. THIS IS VERY IMPORTANT.",
+          content: "Provide a summary the conversation below.",
         },
+        { role: "user", content: lines },
       ],
     });
     // get the answer back

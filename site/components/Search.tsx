@@ -13,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { Separator } from "./ui/separator";
 
 interface SearchResults {
   summary?: string;
@@ -53,8 +54,30 @@ export const Search = () => {
   };
 
   return (
-    <div className="flex flex-col w-1/2 items-start gap-4">
-      <div className="flex flex-row w-full items-center justify-center gap-3">
+    <div className="flex flex-col w-1/2 items-start">
+      <SearchInput
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
+        handleSearchQuery={handleSearchQuery}
+      />
+      <Separator className="" />
+      <SearchResults results={results} />
+    </div>
+  );
+};
+
+export const SearchInput = ({
+  searchParams,
+  setSearchParams,
+  handleSearchQuery,
+}: {
+  searchParams: SearchQuery;
+  setSearchParams: any;
+  handleSearchQuery: any;
+}) => {
+  return (
+    <div className="flex flex-col w-full mb-10 space-y-5">
+      <div className="flex flex-row w-full items-center justify-center space-x-5">
         <Input
           className="w-full"
           value={searchParams.query}
@@ -64,21 +87,29 @@ export const Search = () => {
         />
         <Button onClick={handleSearchQuery}>Submit</Button>
       </div>
-      <Label htmlFor="similarity">{searchParams.similarity}</Label>
-      <Slider
-        id="similarity"
-        defaultValue={[1]}
-        max={5}
-        step={1}
-        className="w-1/2"
-        onValueChange={(e) =>
-          setSearchParams({
-            ...searchParams,
-            similarity: e.at(0) as number,
-          })
-        }
-      />
-      <SearchResults results={results} />
+      <div className="w-1/2">
+        <div className="flex flex-row justify-between">
+          <Label htmlFor="similarity">Number of References</Label>
+          <span className="text-muted-foreground">
+            {searchParams.similarity}
+          </span>
+        </div>
+        <Slider
+          id="similarity"
+          name="Reference"
+          defaultValue={[3]}
+          max={5}
+          step={1}
+          className="w-full mt-2"
+          aria-aria-label="Reference count"
+          onValueChange={(e) =>
+            setSearchParams({
+              ...searchParams,
+              similarity: e.at(0) as number,
+            })
+          }
+        />
+      </div>
     </div>
   );
 };
@@ -86,15 +117,24 @@ export const Search = () => {
 const SearchResults = ({ results }: { results: SearchResults }) => {
   const summaryLines = results.summary?.split("$SEP");
   const references = results.references;
+
+  if (!summaryLines || !references) {
+    return <div></div>;
+  }
   return (
-    <div className="flex flex-col w-full gap-3">
-      {summaryLines?.map((line) => (
-        <div className="italic">{line}</div>
-      ))}
-      <div className="text-2xl">References</div>
-      {references?.map((ref) => (
-        <ReferenceCard {...ref} />
-      ))}
+    <div className="flex flex-col w-full my-5 space-y-5">
+      <div>
+        <div className="text-2xl">Summary</div>
+        {summaryLines?.map((line) => (
+          <div className="italic">{line}</div>
+        ))}
+      </div>
+      <div className="space-y-4">
+        <div className="text-2xl">References</div>
+        {references?.map((ref) => (
+          <ReferenceCard {...ref} />
+        ))}
+      </div>
     </div>
   );
 };
