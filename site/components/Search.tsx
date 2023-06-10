@@ -5,15 +5,25 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Slider } from "./ui/slider";
 import { Label } from "./ui/label";
+import { get } from "http";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 
 interface SearchResults {
   summary?: string;
-  references?: {
-    id: string;
-    line: string;
-    timestamp: number;
-    video_url: string;
-  }[];
+  references?: SearchReference[];
+}
+
+export interface SearchReference {
+  id: string;
+  line: string;
+  timestamp: number;
+  video_url: string;
 }
 
 export interface SearchQuery {
@@ -43,7 +53,7 @@ export const Search = () => {
   };
 
   return (
-    <div className="flex flex-col w-1/2 items-center justify-center gap-3">
+    <div className="flex flex-col w-1/2 items-start gap-4">
       <div className="flex flex-row w-full items-center justify-center gap-3">
         <Input
           className="w-full"
@@ -79,13 +89,11 @@ const SearchResults = ({ results }: { results: SearchResults }) => {
   return (
     <div className="flex flex-col w-full gap-3">
       {summaryLines?.map((line) => (
-        <div>{line}</div>
+        <div className="italic">{line}</div>
       ))}
+      <div className="text-2xl">References</div>
       {references?.map((ref) => (
-        <div key={ref.id}>
-          <div>{ref.line}</div>
-          <a href={getVideoUrl(ref.video_url, ref.timestamp)}>Youtube Link</a>
-        </div>
+        <ReferenceCard {...ref} />
       ))}
     </div>
   );
@@ -94,4 +102,26 @@ const SearchResults = ({ results }: { results: SearchResults }) => {
 const getVideoUrl = (url: string, timestamp: number) => {
   const roundedTimestamp = Math.floor(timestamp);
   return `${url}&t=${roundedTimestamp}`;
+};
+
+export const ReferenceCard = ({
+  line,
+  video_url,
+  id,
+  timestamp,
+}: SearchReference) => {
+  return (
+    <Card key={id}>
+      <CardHeader>
+        <CardTitle>Context</CardTitle>
+        <CardDescription>References to the youtube video...</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="italic">{line}</div>
+        <Button>
+          <a href={getVideoUrl(video_url, timestamp)}>Youtube Link</a>
+        </Button>
+      </CardContent>
+    </Card>
+  );
 };

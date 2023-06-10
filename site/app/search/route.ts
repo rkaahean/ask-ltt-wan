@@ -1,11 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import {
-  getAdditionalNeighbours,
-  getEmbedding,
-  getNearestNeighbors,
-  getQuerySummary,
-} from "../page";
 import { SearchQuery } from "@/components/Search";
+import { NextRequest, NextResponse } from "next/server";
+import { getEmbedding, getNearestNeighbors, getQuerySummary } from "../page";
 
 export async function POST(request: NextRequest) {
   // search by getting embeddings and then the nearest neighbours

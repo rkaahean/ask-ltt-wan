@@ -23,7 +23,8 @@ export default async function Home() {
   return (
     <main
       className={classNames(
-        "flex flex-col items-center justify-center h-screen w-screen gap-4"
+        "flex flex-col items-center justify-start h-screen w-screen gap-4",
+        "my-5"
       )}
     >
       <div className="text-4xl">Ask LTT WAN</div>
