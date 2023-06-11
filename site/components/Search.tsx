@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Slider } from "./ui/slider";
 import { Label } from "./ui/label";
-import { get } from "http";
 import {
   Card,
   CardContent,
@@ -14,6 +13,13 @@ import {
   CardTitle,
 } from "./ui/card";
 import { Separator } from "./ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 interface SearchResults {
   summary?: string;
@@ -53,6 +59,24 @@ export const Search = () => {
     setResults(response);
   };
 
+  const getYoutubeVideos = async () => {
+    // create a query to the API route
+    const response = await fetch("/videos", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((res) => res.json());
+    return response;
+  };
+
+  let videos;
+  useEffect(() => {
+    videos = getYoutubeVideos();
+  });
+
+  console.log("Videos client", videos);
+
   return (
     <div className="flex flex-col w-1/2 items-start">
       <SearchInput
@@ -87,20 +111,18 @@ export const SearchInput = ({
         />
         <Button onClick={handleSearchQuery}>Submit</Button>
       </div>
-      <div className="w-1/2">
-        <div className="flex flex-row justify-between">
-          <Label htmlFor="similarity">Number of References</Label>
-          <span className="text-muted-foreground">
-            {searchParams.similarity}
-          </span>
-        </div>
+      <div className="flex flex-row w-1/2 justify-between">
+        <Label htmlFor="similarity">Number of References</Label>
+        <span className="text-muted-foreground">{searchParams.similarity}</span>
+      </div>
+      <div className="flex flex-row w-full">
         <Slider
           id="similarity"
           name="Reference"
           defaultValue={[3]}
           max={5}
           step={1}
-          className="w-full mt-2"
+          className="w-1/2 mr-2"
           aria-aria-label="Reference count"
           onValueChange={(e) =>
             setSearchParams({
@@ -109,6 +131,16 @@ export const SearchInput = ({
             })
           }
         />
+        <Select>
+          <SelectTrigger className="w-1/2 ml-2">
+            <SelectValue placeholder="Youtube Video?" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="light">Light</SelectItem>
+            <SelectItem value="dark">Dark</SelectItem>
+            <SelectItem value="system">System</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

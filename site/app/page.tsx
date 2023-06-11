@@ -27,7 +27,7 @@ export default async function Home() {
         "my-5"
       )}
     >
-      <div className="text-4xl mb-10">Ask LTT WAN</div>
+      <div className="text-4xl mb-10">ask-wan</div>
       <Search />
     </main>
   );
@@ -105,6 +105,16 @@ export const getAdditionalNeighbours = async (
   }
   additionalNeighbours.push(...neighbours);
   return additionalNeighbours;
+};
+
+export const getVideoUrls = async () => {
+  const distinctVideoUrls = await prisma.docs.findMany({
+    select: {
+      video_url: true,
+    },
+    distinct: ["video_url"],
+  });
+  return distinctVideoUrls;
 };
 
 export const getQuerySummary = async (neighbors: Neighbour[]) => {
