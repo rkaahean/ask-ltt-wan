@@ -108,11 +108,12 @@ export const getAdditionalNeighbours = async (
 };
 
 export const getVideoUrls = async () => {
-  const distinctVideoUrls = await prisma.docs.findMany({
+  const distinctVideoUrls = await prisma.videos.findMany({
     select: {
-      video_url: true,
+      title: true,
+      url: true,
     },
-    distinct: ["video_url"],
+    distinct: ["url"],
   });
   return distinctVideoUrls;
 };

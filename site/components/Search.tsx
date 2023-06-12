@@ -1,10 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Slider } from "./ui/slider";
-import { Label } from "./ui/label";
 import {
   Card,
   CardContent,
@@ -12,7 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { Separator } from "./ui/separator";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 import {
   Select,
   SelectContent,
@@ -20,6 +18,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { Separator } from "./ui/separator";
+import { Slider } from "./ui/slider";
+import useSWR from "swr";
 
 interface SearchResults {
   summary?: string;
@@ -42,7 +43,7 @@ export interface SearchQuery {
 export const Search = () => {
   const [searchParams, setSearchParams] = useState<SearchQuery>({
     query: "",
-    similarity: 2,
+    similarity: 3,
     explainability: 1,
   });
   const [results, setResults] = useState<SearchResults>({});
@@ -58,24 +59,6 @@ export const Search = () => {
     }).then((res) => res.json());
     setResults(response);
   };
-
-  const getYoutubeVideos = async () => {
-    // create a query to the API route
-    const response = await fetch("/videos", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((res) => res.json());
-    return response;
-  };
-
-  let videos;
-  useEffect(() => {
-    videos = getYoutubeVideos();
-  });
-
-  console.log("Videos client", videos);
 
   return (
     <div className="flex flex-col w-1/2 items-start">
@@ -99,8 +82,12 @@ export const SearchInput = ({
   setSearchParams: any;
   handleSearchQuery: any;
 }) => {
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+  const { data, isLoading } = useSWR("/videos", fetcher);
+
   return (
-    <div className="flex flex-col w-full mb-10 space-y-5">
+    <div className="flex flex-col w-full mb-10 gap-10">
       <div className="flex flex-row w-full items-center justify-center space-x-5">
         <Input
           className="w-full"
@@ -111,36 +98,52 @@ export const SearchInput = ({
         />
         <Button onClick={handleSearchQuery}>Submit</Button>
       </div>
-      <div className="flex flex-row w-1/2 justify-between">
-        <Label htmlFor="similarity">Number of References</Label>
-        <span className="text-muted-foreground">{searchParams.similarity}</span>
-      </div>
-      <div className="flex flex-row w-full">
-        <Slider
-          id="similarity"
-          name="Reference"
-          defaultValue={[3]}
-          max={5}
-          step={1}
-          className="w-1/2 mr-2"
-          aria-aria-label="Reference count"
-          onValueChange={(e) =>
-            setSearchParams({
-              ...searchParams,
-              similarity: e.at(0) as number,
-            })
-          }
-        />
-        <Select>
-          <SelectTrigger className="w-1/2 ml-2">
-            <SelectValue placeholder="Youtube Video?" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="light">Light</SelectItem>
-            <SelectItem value="dark">Dark</SelectItem>
-            <SelectItem value="system">System</SelectItem>
-          </SelectContent>
-        </Select>
+      {/* layout row */}
+      <div className="flex flex-row w-full h-full">
+        {/* split in 2:3 ratio */}
+        <div className="w-1/3 mr-2 h-full">
+          {/* layout the labels for slider + slider itself */}
+          <div className="flex flex-col w-full justify-between gap-3">
+            {/* layout the labels */}
+            <div className="flex flex-row w-full justify-between">
+              <Label htmlFor="similarity">Number of References</Label>
+              <div className="text-muted-foreground">
+                {searchParams.similarity}
+              </div>
+            </div>
+            <Slider
+              id="similarity"
+              name="Reference"
+              defaultValue={[3]}
+              max={5}
+              step={1}
+              className="mr-2"
+              aria-aria-label="Reference count"
+              onValueChange={(e) =>
+                setSearchParams({
+                  ...searchParams,
+                  similarity: e.at(0) as number,
+                })
+              }
+            />
+          </div>
+        </div>
+        {/* video selector */}
+        <div className="w-2/3 ml-2">
+          <Select>
+            <SelectTrigger>
+              <SelectValue placeholder="Youtube Video?" />
+            </SelectTrigger>
+            <SelectContent>
+              {!isLoading &&
+                data.videos.map((video: any) => (
+                  <SelectItem value={video.url} key={video.url}>
+                    {video.title}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
     </div>
   );
