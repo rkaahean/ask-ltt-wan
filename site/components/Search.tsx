@@ -67,7 +67,7 @@ export const Search = () => {
         setSearchParams={setSearchParams}
         handleSearchQuery={handleSearchQuery}
       />
-      <Separator className="" />
+      <Separator className="bg-stone-800" />
       <SearchResults results={results} />
     </div>
   );
@@ -87,10 +87,10 @@ export const SearchInput = ({
   const { data, isLoading } = useSWR("/videos", fetcher);
 
   return (
-    <div className="flex flex-col w-full mb-10 gap-10">
+    <div className="flex flex-col w-full mb-10 gap-10 text-stone-200">
       <div className="flex flex-row w-full items-center justify-center space-x-5">
         <Input
-          className="w-full"
+          className="bg-stone-900 w-full focus-visible:ring-1 focus-visible:ring-blue-400"
           value={searchParams.query}
           onChange={(e) =>
             setSearchParams({ ...searchParams, query: e.target.value })
@@ -131,7 +131,7 @@ export const SearchInput = ({
         {/* video selector */}
         <div className="w-2/3 ml-2">
           <Select>
-            <SelectTrigger>
+            <SelectTrigger className="border-0 bg-stone-900">
               <SelectValue placeholder="Youtube Video?" />
             </SelectTrigger>
             <SelectContent>

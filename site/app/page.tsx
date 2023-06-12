@@ -24,10 +24,11 @@ export default async function Home() {
     <main
       className={classNames(
         "flex flex-col items-center justify-start h-screen w-screen gap-4",
-        "my-5"
+        "py-5",
+        "bg-stone-950"
       )}
     >
-      <div className="text-4xl mb-10">ask-wan</div>
+      <div className="text-4xl mb-10 text-blue-400">ask-wan</div>
       <Search />
     </main>
   );
