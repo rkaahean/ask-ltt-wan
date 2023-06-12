@@ -157,15 +157,15 @@ const SearchResults = ({ results }: { results: SearchResults }) => {
     return <div></div>;
   }
   return (
-    <div className="flex flex-col w-full my-5 space-y-5">
+    <div className="flex flex-col w-full my-5 space-y-5 text-stone-400">
       <div>
-        <div className="text-2xl">Summary</div>
+        <div className="text-2xl text-blue-300 font-semibold">Summary</div>
         {summaryLines?.map((line) => (
           <div className="italic">{line}</div>
         ))}
       </div>
       <div className="space-y-4">
-        <div className="text-2xl">References</div>
+        <div className="text-2xl text-blue-300 font-semibold">References</div>
         {references?.map((ref) => (
           <ReferenceCard {...ref} />
         ))}
@@ -186,14 +186,14 @@ export const ReferenceCard = ({
   timestamp,
 }: SearchReference) => {
   return (
-    <Card key={id}>
+    <Card key={id} className="bg-stone-900 border-0 ring-0">
       <CardHeader>
-        <CardTitle>Context</CardTitle>
+        <CardTitle className="text-blue-200">Context</CardTitle>
         <CardDescription>References to the youtube video...</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 text-stone-400">
         <div className="italic">{line}</div>
-        <Button>
+        <Button className="bg-orange-700 hover:bg-orange-800">
           <a href={getVideoUrl(video_url, timestamp)}>Youtube Link</a>
         </Button>
       </CardContent>
