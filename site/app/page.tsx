@@ -25,6 +25,7 @@ export default async function Home() {
       className={classNames(
         "flex flex-col items-center justify-start min-h-screen w-screen gap-4",
         "py-5",
+        "px-8",
         "bg-stone-950"
       )}
     >

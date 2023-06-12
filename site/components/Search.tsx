@@ -61,7 +61,7 @@ export const Search = () => {
   };
 
   return (
-    <div className="flex flex-col w-1/2 items-start">
+    <div className="flex flex-col w-full sm:w-1/2 items-start">
       <SearchInput
         searchParams={searchParams}
         setSearchParams={setSearchParams}
@@ -90,11 +90,12 @@ export const SearchInput = ({
     <div className="flex flex-col w-full mb-10 gap-10 text-stone-200">
       <div className="flex flex-row w-full items-center justify-center space-x-5">
         <Input
-          className="bg-stone-900 w-full focus-visible:ring-1 focus-visible:ring-blue-400"
+          className="bg-stone-900 w-full focus-visible:ring-1 focus-visible:ring-blue-400 text-xs sm:text-base"
           value={searchParams.query}
           onChange={(e) =>
             setSearchParams({ ...searchParams, query: e.target.value })
           }
+          placeholder="What is the RTX4060ti review about?"
         />
         <Button onClick={handleSearchQuery}>Submit</Button>
       </div>
@@ -105,7 +106,7 @@ export const SearchInput = ({
           {/* layout the labels for slider + slider itself */}
           <div className="flex flex-col w-full justify-between gap-3">
             {/* layout the labels */}
-            <div className="flex flex-row w-full justify-between">
+            <div className="flex flex-row w-full justify-between text-xs sm:text-base">
               <Label htmlFor="similarity">Number of References</Label>
               <div className="text-muted-foreground">
                 {searchParams.similarity}
@@ -129,7 +130,7 @@ export const SearchInput = ({
           </div>
         </div>
         {/* video selector */}
-        <div className="w-2/3 ml-2">
+        <div className="w-2/3 ml-2 text-xs sm:text-base">
           <Select>
             <SelectTrigger className="border-0 bg-stone-900">
               <SelectValue placeholder="Youtube Video?" />
@@ -161,7 +162,7 @@ const SearchResults = ({ results }: { results: SearchResults }) => {
       <div>
         <div className="text-2xl text-blue-300 font-semibold">Summary</div>
         {summaryLines?.map((line) => (
-          <div className="italic">{line}</div>
+          <div className="italic text-sm sm:text-base">{line}</div>
         ))}
       </div>
       <div className="space-y-4">
@@ -191,7 +192,7 @@ export const ReferenceCard = ({
         <CardTitle className="text-blue-200">Context</CardTitle>
         <CardDescription>References to the youtube video...</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4 text-stone-400">
+      <CardContent className="space-y-4 text-stone-400 text-sm sm:text-base">
         <div className="italic">{line}</div>
         <Button className="bg-orange-700 hover:bg-orange-800">
           <a href={getVideoUrl(video_url, timestamp)}>Youtube Link</a>
