@@ -107,7 +107,9 @@ export const SearchInput = ({
           <div className="flex flex-col w-full justify-between gap-3">
             {/* layout the labels */}
             <div className="flex flex-row w-full justify-between text-xs sm:text-base">
-              <Label htmlFor="similarity">Number of References</Label>
+              <Label htmlFor="similarity" className="text-xs">
+                Number of References
+              </Label>
               <div className="text-muted-foreground">
                 {searchParams.similarity}
               </div>
@@ -138,7 +140,11 @@ export const SearchInput = ({
             <SelectContent>
               {!isLoading &&
                 data.videos.map((video: any) => (
-                  <SelectItem value={video.url} key={video.url}>
+                  <SelectItem
+                    value={video.url}
+                    key={video.url}
+                    className="text-xs sm:text-base"
+                  >
                     {video.title}
                   </SelectItem>
                 ))}
