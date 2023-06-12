@@ -5,4 +5,5 @@ preprocess/*
 
 # ignore all the audio files except the json
 data/*
+!data/transcribed/
 !data/videos.json
