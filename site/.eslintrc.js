@@ -8,6 +8,7 @@ module.exports = {
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "eslint:recommended",
+    "next",
   ],
   overrides: [],
   parserOptions: {
