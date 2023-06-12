@@ -201,7 +201,9 @@ export const ReferenceCard = ({
       <CardContent className="space-y-4 text-stone-400 text-sm sm:text-base">
         <div className="italic">{line}</div>
         <Button className="bg-orange-700 hover:bg-orange-800">
-          <a href={getVideoUrl(video_url, timestamp)}>Youtube Link</a>
+          <a href={getVideoUrl(video_url, timestamp)} target="_blank">
+            Youtube Link
+          </a>
         </Button>
       </CardContent>
     </Card>
