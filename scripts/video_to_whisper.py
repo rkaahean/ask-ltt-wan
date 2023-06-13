@@ -12,6 +12,8 @@ for file in files:
     print("Whispering " + file)
     command = [
         "./../whisper.cpp/main",
+        "--threads",
+        "10",
         "-m",
         "../whisper.cpp/models/ggml-base.en.bin",
         "-f",

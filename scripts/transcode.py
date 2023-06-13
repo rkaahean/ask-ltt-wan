@@ -3,10 +3,15 @@ import subprocess
 
 # load files in data/original
 files = os.listdir("data/original")
+# load files in data/transcoded
+transcoded = os.listdir("data/transcoded")
 
 # loop through files
 for file in files:
-    print(file)
+    # if file is already transcoded, skip
+    if file in transcoded:
+        print("Skipping " + file)
+        continue
     command = [
         "ffmpeg",
         "-i",

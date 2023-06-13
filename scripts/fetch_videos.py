@@ -38,7 +38,7 @@ def get_playlist_videos(playlist_url):
                 }
             )
 
-        return videos[:10]
+        return videos[:40]
 
 
 if __name__ == "__main__":
