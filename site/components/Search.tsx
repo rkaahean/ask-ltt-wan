@@ -155,7 +155,6 @@ export const SearchInput = ({
           />
         </div>
       </div>
-      {/* video selector */}
       <div
         className={cn(
           "flex flex-col items-start gap-3 w-1/2",
@@ -164,7 +163,7 @@ export const SearchInput = ({
       >
         <Tabs
           defaultValue="last-3m"
-          className="rounded-lg"
+          className="rounded-lg w-full"
           onValueChange={(e) => {
             let lookback: number;
             switch (e) {
@@ -199,7 +198,6 @@ export const SearchInput = ({
             <TabsTrigger value="all-time">All time</TabsTrigger>
           </TabsList>
         </Tabs>
-
         <Popover>
           <PopoverTrigger asChild>
             <Button
