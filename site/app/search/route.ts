@@ -13,10 +13,7 @@ export async function POST(request: NextRequest) {
     const embedding = (await getEmbedding(query.query)) as number[];
     // get nearest neighbors
     console.log("Getting neighbours...");
-    let nearestNeighbors = await getNearestNeighbors(
-      embedding,
-      query.similarity
-    );
+    let nearestNeighbors = await getNearestNeighbors(embedding, query);
     // get more context around the lines just recevied
     console.log("Getting additional neighbours...");
     // nearestNeighbors = await getAdditionalNeighbours(nearestNeighbors);

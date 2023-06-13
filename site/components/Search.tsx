@@ -2,7 +2,6 @@
 
 import { cn } from "@/lib/utils";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { format } from "path";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Calendar } from "./ui/calendar";
@@ -18,6 +17,8 @@ import { Label } from "./ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Separator } from "./ui/separator";
 import { Slider } from "./ui/slider";
+import { DateRange } from "react-day-picker";
+import { add, addDays, format } from "date-fns";
 
 interface SearchResults {
   summary?: string;
@@ -36,6 +37,10 @@ export interface SearchQuery {
   query: string;
   similarity: number;
   explainability: number;
+  date: {
+    from: Date;
+    to: Date;
+  };
 }
 
 export const Search = () => {
@@ -43,6 +48,10 @@ export const Search = () => {
     query: "",
     similarity: 3,
     explainability: 1,
+    date: {
+      from: addDays(new Date(), -30),
+      to: new Date(),
+    },
   });
   const [results, setResults] = useState<SearchResults>({});
 
@@ -80,13 +89,14 @@ export const SearchInput = ({
   setSearchParams: any;
   handleSearchQuery: any;
 }) => {
-  const [date, setDate] = useState<Date>();
-
   return (
     <div className="flex flex-col w-full mb-10 gap-10 text-stone-200">
-      <div className="flex flex-row w-full items-center justify-center space-x-5">
+      <div className="flex flex-row w-full items-center justify-between space-x-5">
         <Input
-          className="bg-stone-900 w-full focus-visible:ring-1 focus-visible:ring-blue-400 text-xs sm:text-base"
+          className={cn(
+            "bg-stone-900 w-full focus-visible:ring-1 focus-visible:ring-orange-900 text-xs sm:text-base",
+            "text-stone-500"
+          )}
           value={searchParams.query}
           onChange={(e) =>
             setSearchParams({ ...searchParams, query: e.target.value })
@@ -122,7 +132,7 @@ export const SearchInput = ({
               max={5}
               step={1}
               className="mr-2"
-              aria-aria-label="Reference count"
+              aria-label="Reference count"
               onValueChange={(e) =>
                 setSearchParams({
                   ...searchParams,
@@ -133,26 +143,50 @@ export const SearchInput = ({
           </div>
         </div>
         {/* video selector */}
-        <div className="w-1/3 ml-2 text-xs sm:text-base text-stone-200 bg-stone-800">
+        <div className={cn("ml-2 text-xs sm:text-base")}>
           <Popover>
             <PopoverTrigger asChild>
               <Button
+                id="date"
                 variant={"outline"}
                 className={cn(
-                  "w-[280px] justify-start text-left font-normal text-stone-200",
-                  !date && "text-muted-foreground"
+                  "w-[300px] justify-start text-left font-normal",
+                  !searchParams.date && "text-muted-foreground",
+                  "bg-stone-800 hover:bg-stone-900 border-none hover:text-stone-200"
                 )}
               >
-                <CalendarIcon className="mr-2 h-4 w-4 text-stone-200" />
-                {date ? format(date, "PPP") : <span>Pick a date</span>}
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {searchParams?.date.from ? (
+                  searchParams.date.to ? (
+                    <>
+                      {format(searchParams.date.from, "LLL dd, y")} -{" "}
+                      {format(searchParams.date.to, "LLL dd, y")}
+                    </>
+                  ) : (
+                    format(searchParams.date.from, "LLL dd, y")
+                  )
+                ) : (
+                  <span>Pick a date</span>
+                )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
+            <PopoverContent className="w-auto p-0" align="start">
               <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
                 initialFocus
+                mode="range"
+                defaultMonth={searchParams?.date.from}
+                selected={searchParams.date}
+                onSelect={(date) => {
+                  console.log("Setting date...", date);
+                  setSearchParams({
+                    ...searchParams,
+                    date: {
+                      from: date?.from,
+                      to: date?.to,
+                    },
+                  });
+                }}
+                numberOfMonths={2}
               />
             </PopoverContent>
           </Popover>

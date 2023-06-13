@@ -18,8 +18,9 @@ model docs {
 }
 
 model videos {
-  id         Int     @id @default(autoincrement())
-  title      String? @db.VarChar
-  url        String? @db.VarChar
-  created_at String? @default(dbgenerated("now()")) @db.VarChar
+  id                Int       @id @default(autoincrement())
+  title             String?   @db.VarChar
+  url               String?   @db.VarChar
+  video_uploaded_at DateTime? @db.Date
+  created_at        String?   @default(dbgenerated("now()")) @db.VarChar
 }

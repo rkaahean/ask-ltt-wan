@@ -1,5 +1,5 @@
 // import pgvector from 'pgvector/utils'
-import { Search } from "@/components/Search";
+import { Search, SearchQuery } from "@/components/Search";
 import { Prisma, PrismaClient } from "@prisma/client";
 import classNames from "classnames";
 import { Configuration, OpenAIApi } from "openai";
@@ -61,7 +61,7 @@ export const getEmbedding = async (line: string) => {
 
 export const getNearestNeighbors = async (
   embedding: number[],
-  similarity: number
+  params: SearchQuery
 ): Promise<Neighbour[]> => {
   const neighbors: Neighbour[] = await prisma.$queryRaw`
     SELECT 
@@ -77,7 +77,10 @@ export const getNearestNeighbors = async (
       docs 
       left join videos
         on docs.video_url = videos.url
-    ORDER BY 1 - (embedding <=> ${embedding}::vector) DESC LIMIT ${similarity}
+    WHERE 
+      videos.video_uploaded_at >= TO_DATE(${params.date.from}, 'YYYY-MM-DD')
+      AND videos.video_uploaded_at <= TO_DATE(${params.date.to}, 'YYYY-MM-DD')
+    ORDER BY 1 - (embedding <=> ${embedding}::vector) DESC LIMIT ${params.similarity}
   `;
   return neighbors;
 };
