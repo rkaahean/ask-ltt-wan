@@ -113,7 +113,7 @@ export const SearchInput = ({
       {/* layout row */}
       <div className="flex flex-row w-full h-full justify-between">
         {/* split in 2:3 ratio */}
-        <div className="w-1/3 mr-2 h-full">
+        <div className="w-1/2 mr-2 h-full">
           {/* layout the labels for slider + slider itself */}
           <div className="flex flex-col w-full justify-between gap-3">
             {/* layout the labels */}
@@ -150,7 +150,8 @@ export const SearchInput = ({
                 id="date"
                 variant={"outline"}
                 className={cn(
-                  "w-[300px] justify-start text-left font-normal",
+                  "justify-start text-left font-normal",
+                  "text-xs sm:text-base",
                   !searchParams.date && "text-muted-foreground",
                   "bg-stone-800 hover:bg-stone-900 border-none hover:text-stone-200"
                 )}

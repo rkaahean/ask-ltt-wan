@@ -25,15 +25,13 @@ export default async function Home() {
     <main
       className={classNames(
         "flex flex-col items-center justify-start min-h-screen w-screen gap-4",
-        "py-5",
-        "px-8",
-        "bg-gradient-to-b from-black to-orange-950"
+        "px-4 sm:px-8"
       )}
     >
       <div className="text-4xl text-orange-500 font-bold tracking-widest">
         ask-wan
       </div>
-      <div className="italic text-stone-500 mb-10">
+      <div className="italic text-stone-500 mb-3 sm:mb-10">
         Ask questions regarding the conversations in the WAN show!
       </div>
       <Search />
