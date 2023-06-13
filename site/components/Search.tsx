@@ -1,7 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { addDays, format, set } from "date-fns";
+import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Calendar } from "./ui/calendar";
@@ -17,8 +18,6 @@ import { Label } from "./ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Separator } from "./ui/separator";
 import { Slider } from "./ui/slider";
-import { DateRange } from "react-day-picker";
-import { add, addDays, format } from "date-fns";
 
 interface SearchResults {
   summary?: string;
@@ -41,6 +40,7 @@ export interface SearchQuery {
     from: Date;
     to: Date;
   };
+  isLoading: boolean;
 }
 
 export const Search = () => {
@@ -52,11 +52,13 @@ export const Search = () => {
       from: addDays(new Date(), -30),
       to: new Date(),
     },
+    isLoading: false,
   });
   const [results, setResults] = useState<SearchResults>({});
 
   const handleSearchQuery = async () => {
     // create a query to the API route
+    setSearchParams({ ...searchParams, isLoading: true });
     const response = await fetch("/search", {
       method: "POST",
       body: JSON.stringify({ query: searchParams }),
@@ -64,6 +66,7 @@ export const Search = () => {
         "Content-Type": "application/json",
       },
     }).then((res) => res.json());
+    setSearchParams({ ...searchParams, isLoading: false });
     setResults(response);
   };
 
@@ -72,6 +75,7 @@ export const Search = () => {
       <SearchInput
         searchParams={searchParams}
         setSearchParams={setSearchParams}
+        setResults={setResults}
         handleSearchQuery={handleSearchQuery}
       />
       <Separator className="bg-stone-800" />
@@ -83,30 +87,42 @@ export const Search = () => {
 export const SearchInput = ({
   searchParams,
   setSearchParams,
+  setResults,
   handleSearchQuery,
 }: {
   searchParams: SearchQuery;
   setSearchParams: any;
+  setResults: any;
   handleSearchQuery: any;
 }) => {
   return (
     <div className="flex flex-col w-full mb-10 gap-10 text-stone-200">
       <div className="flex flex-row w-full items-center justify-between space-x-5">
+        <Button
+          className="bg-red-900 hover:bg-red-950 text-xs sm:text-base"
+          onClick={() => setSearchParams({ ...searchParams, query: "" })}
+        >
+          Clear
+        </Button>
         <Input
           className={cn(
             "bg-stone-900 w-full focus-visible:ring-1 focus-visible:ring-orange-900 text-xs sm:text-base",
             "text-stone-500"
           )}
           value={searchParams.query}
-          onChange={(e) =>
-            setSearchParams({ ...searchParams, query: e.target.value })
-          }
+          onChange={(e) => {
+            setSearchParams({ ...searchParams, query: e.target.value });
+            setResults({});
+          }}
           placeholder="What is the RTX4060ti review about?"
         />
         <Button
           className="bg-orange-700 hover:bg-orange-800"
           onClick={handleSearchQuery}
         >
+          {searchParams.isLoading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : null}
           Submit
         </Button>
       </div>
