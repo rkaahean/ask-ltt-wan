@@ -192,13 +192,8 @@ export const SearchInput = ({
             });
           }}
         >
-          <TabsList className="bg-stone-800 text-orange-500">
-            <TabsTrigger
-              value="last-m"
-              className="bg-stone-800 text-orange-500"
-            >
-              Last Month
-            </TabsTrigger>
+          <TabsList className="bg-black text-orange-500">
+            <TabsTrigger value="last-m">Last Month</TabsTrigger>
             <TabsTrigger value="last-3m">Last 3 Months</TabsTrigger>
             <TabsTrigger value="last-year">Last Year</TabsTrigger>
             <TabsTrigger value="all-time">All time</TabsTrigger>
