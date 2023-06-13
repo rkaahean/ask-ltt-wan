@@ -72,7 +72,7 @@ export const Search = () => {
   };
 
   return (
-    <div className="flex flex-col w-full sm:w-1/2 items-start">
+    <div className="flex flex-col w-full sm:w-1/2 items-start px-2">
       <SearchInput
         searchParams={searchParams}
         setSearchParams={setSearchParams}
@@ -127,137 +127,132 @@ export const SearchInput = ({
           Submit
         </Button>
       </div>
-      {/* layout row */}
-      <div className="flex flex-row w-full h-full justify-between">
-        {/* split in 2:3 ratio */}
-        <div className="w-1/2 mr-2 h-full">
-          {/* layout the labels for slider + slider itself */}
-          <div className="flex flex-col w-full justify-between gap-3">
-            {/* layout the labels */}
-            <div className="flex flex-row w-full justify-between text-xs sm:text-base">
-              <Label htmlFor="similarity" className="text-xs sm:text-sm">
-                Number of References
-              </Label>
-              <div className="text-muted-foreground">
-                {searchParams.similarity}
-              </div>
+      <div className="w-1/2 h-full">
+        {/* layout the labels for slider + slider itself */}
+        <div className="flex flex-col w-full justify-between gap-3">
+          {/* layout the labels */}
+          <div className="flex flex-row w-full justify-between text-xs sm:text-base">
+            <Label htmlFor="similarity" className="text-xs sm:text-sm">
+              Number of References
+            </Label>
+            <div className="text-muted-foreground">
+              {searchParams.similarity}
             </div>
-            <Slider
-              id="similarity"
-              name="Reference"
-              defaultValue={[3]}
-              max={5}
-              step={1}
-              className="mr-2"
-              aria-label="Reference count"
-              onValueChange={(e) =>
-                setSearchParams({
-                  ...searchParams,
-                  similarity: e.at(0) as number,
-                })
-              }
-            />
           </div>
-        </div>
-        {/* video selector */}
-        <div
-          className={cn(
-            "flex flex-col items-end gap-3",
-            "ml-2 text-xs sm:text-base"
-          )}
-        >
-          <Tabs
-            defaultValue="last-3m"
-            className="rounded-lg"
-            onValueChange={(e) => {
-              let lookback: number;
-              switch (e) {
-                case "last-m":
-                  lookback = 30;
-                  break;
-                case "last-3m":
-                  lookback = 90;
-                  break;
-                case "last-year":
-                  lookback = 365;
-                  break;
-                case "all-time":
-                  lookback = 365 * 20;
-                  break;
-                default:
-                  lookback = 30;
-              }
+          <Slider
+            id="similarity"
+            name="Reference"
+            defaultValue={[3]}
+            max={5}
+            step={1}
+            aria-label="Reference count"
+            onValueChange={(e) =>
               setSearchParams({
                 ...searchParams,
-                date: {
-                  from: addDays(new Date(), -lookback),
-                  to: new Date(),
-                },
-              });
-            }}
-          >
-            <TabsList className="bg-stone-800 text-orange-500">
-              <TabsTrigger
-                value="last-m"
-                className="bg-stone-800 text-orange-500"
-              >
-                Last Month
-              </TabsTrigger>
-              <TabsTrigger value="last-3m">Last 3 Months</TabsTrigger>
-              <TabsTrigger value="last-year">Last Year</TabsTrigger>
-              <TabsTrigger value="all-time">All time</TabsTrigger>
-            </TabsList>
-          </Tabs>
-
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                id="date"
-                variant={"outline"}
-                className={cn(
-                  "justify-start text-left font-normal",
-                  "text-xs sm:text-base",
-                  "w-full",
-                  !searchParams.date && "text-muted-foreground",
-                  "bg-stone-800 hover:bg-stone-900 border-none hover:text-stone-200"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {searchParams?.date.from ? (
-                  searchParams.date.to ? (
-                    <>
-                      {format(searchParams.date.from, "LLL dd, y")} -{" "}
-                      {format(searchParams.date.to, "LLL dd, y")}
-                    </>
-                  ) : (
-                    format(searchParams.date.from, "LLL dd, y")
-                  )
-                ) : (
-                  <span>Pick a date</span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                initialFocus
-                mode="range"
-                defaultMonth={searchParams?.date.from}
-                selected={searchParams.date}
-                onSelect={(date) => {
-                  console.log("Setting date...", date);
-                  setSearchParams({
-                    ...searchParams,
-                    date: {
-                      from: date?.from,
-                      to: date?.to,
-                    },
-                  });
-                }}
-                numberOfMonths={2}
-              />
-            </PopoverContent>
-          </Popover>
+                similarity: e.at(0) as number,
+              })
+            }
+          />
         </div>
+      </div>
+      {/* video selector */}
+      <div
+        className={cn(
+          "flex flex-col items-start gap-3 w-1/2",
+          "text-xs sm:text-base"
+        )}
+      >
+        <Tabs
+          defaultValue="last-3m"
+          className="rounded-lg"
+          onValueChange={(e) => {
+            let lookback: number;
+            switch (e) {
+              case "last-m":
+                lookback = 30;
+                break;
+              case "last-3m":
+                lookback = 90;
+                break;
+              case "last-year":
+                lookback = 365;
+                break;
+              case "all-time":
+                lookback = 365 * 20;
+                break;
+              default:
+                lookback = 30;
+            }
+            setSearchParams({
+              ...searchParams,
+              date: {
+                from: addDays(new Date(), -lookback),
+                to: new Date(),
+              },
+            });
+          }}
+        >
+          <TabsList className="bg-stone-800 text-orange-500">
+            <TabsTrigger
+              value="last-m"
+              className="bg-stone-800 text-orange-500"
+            >
+              Last Month
+            </TabsTrigger>
+            <TabsTrigger value="last-3m">Last 3 Months</TabsTrigger>
+            <TabsTrigger value="last-year">Last Year</TabsTrigger>
+            <TabsTrigger value="all-time">All time</TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              id="date"
+              variant={"outline"}
+              className={cn(
+                "justify-start text-left font-normal",
+                "text-xs sm:text-base",
+                "w-full",
+                !searchParams.date && "text-muted-foreground",
+                "bg-stone-800 hover:bg-stone-900 border-none hover:text-stone-200"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {searchParams?.date.from ? (
+                searchParams.date.to ? (
+                  <>
+                    {format(searchParams.date.from, "LLL dd, y")} -{" "}
+                    {format(searchParams.date.to, "LLL dd, y")}
+                  </>
+                ) : (
+                  format(searchParams.date.from, "LLL dd, y")
+                )
+              ) : (
+                <span>Pick a date</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              initialFocus
+              mode="range"
+              defaultMonth={searchParams?.date.from}
+              selected={searchParams.date}
+              onSelect={(date) => {
+                console.log("Setting date...", date);
+                setSearchParams({
+                  ...searchParams,
+                  date: {
+                    from: date?.from,
+                    to: date?.to,
+                  },
+                });
+              }}
+              numberOfMonths={2}
+            />
+          </PopoverContent>
+        </Popover>
       </div>
     </div>
   );
