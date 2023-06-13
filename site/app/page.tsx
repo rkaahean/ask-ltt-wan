@@ -25,7 +25,7 @@ export default async function Home() {
     <main
       className={classNames(
         "flex flex-col items-center justify-start min-h-screen w-screen gap-4",
-        "px-4 sm:px-8"
+        "mx-4 sm:mx-8"
       )}
     >
       <div className="text-4xl text-orange-500 font-bold tracking-widest">
