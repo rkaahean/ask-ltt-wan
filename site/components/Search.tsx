@@ -120,6 +120,7 @@ export const SearchInput = ({
         <Button
           className="bg-orange-700 hover:bg-orange-800"
           onClick={handleSearchQuery}
+          disabled={searchParams.query.length === 0}
         >
           {searchParams.isLoading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
