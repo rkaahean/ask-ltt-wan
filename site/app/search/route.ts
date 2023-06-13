@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
         id: neighbor.id,
         line: neighbor.line,
         timestamp: neighbor.timestamp,
+        title: neighbor.title,
         video_url: neighbor.video_url,
       };
     });

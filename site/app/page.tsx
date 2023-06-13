@@ -15,6 +15,7 @@ export interface Neighbour {
   };
   timestamp: number;
   line: string;
+  title: string;
   video_url: string;
   created_at: Date;
 }
@@ -29,7 +30,7 @@ export default async function Home() {
         "bg-stone-950"
       )}
     >
-      <div className="text-4xl mb-10 text-blue-700 font-bold tracking-widest">
+      <div className="text-4xl mb-10 text-orange-500 font-bold tracking-widest">
         ask-wan
       </div>
       <Search />
@@ -64,15 +65,18 @@ export const getNearestNeighbors = async (
 ): Promise<Neighbour[]> => {
   const neighbors: Neighbour[] = await prisma.$queryRaw`
     SELECT 
-      id, 
+      docs.id, 
       embedding::text, 
       meta, 
       line, 
       video_url,
+      videos.title as title,
       timestamp, 
-      created_at 
+      docs.created_at 
     FROM 
       docs 
+      left join videos
+        on docs.video_url = videos.url
     ORDER BY 1 - (embedding <=> ${embedding}::vector) DESC LIMIT ${similarity}
   `;
   return neighbors;

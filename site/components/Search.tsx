@@ -1,7 +1,11 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { format } from "path";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { Calendar } from "./ui/calendar";
 import {
   Card,
   CardContent,
@@ -11,16 +15,9 @@ import {
 } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Separator } from "./ui/separator";
 import { Slider } from "./ui/slider";
-import useSWR from "swr";
 
 interface SearchResults {
   summary?: string;
@@ -31,6 +28,7 @@ export interface SearchReference {
   id: string;
   line: string;
   timestamp: number;
+  title: string;
   video_url: string;
 }
 
@@ -82,9 +80,7 @@ export const SearchInput = ({
   setSearchParams: any;
   handleSearchQuery: any;
 }) => {
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
-  const { data, isLoading } = useSWR("/videos", fetcher);
+  const [date, setDate] = useState<Date>();
 
   return (
     <div className="flex flex-col w-full mb-10 gap-10 text-stone-200">
@@ -97,17 +93,22 @@ export const SearchInput = ({
           }
           placeholder="What is the RTX4060ti review about?"
         />
-        <Button onClick={handleSearchQuery}>Submit</Button>
+        <Button
+          className="bg-orange-700 hover:bg-orange-800"
+          onClick={handleSearchQuery}
+        >
+          Submit
+        </Button>
       </div>
       {/* layout row */}
-      <div className="flex flex-row w-full h-full">
+      <div className="flex flex-row w-full h-full justify-between">
         {/* split in 2:3 ratio */}
         <div className="w-1/3 mr-2 h-full">
           {/* layout the labels for slider + slider itself */}
           <div className="flex flex-col w-full justify-between gap-3">
             {/* layout the labels */}
             <div className="flex flex-row w-full justify-between text-xs sm:text-base">
-              <Label htmlFor="similarity" className="text-xs">
+              <Label htmlFor="similarity" className="text-xs sm:text-sm">
                 Number of References
               </Label>
               <div className="text-muted-foreground">
@@ -132,24 +133,29 @@ export const SearchInput = ({
           </div>
         </div>
         {/* video selector */}
-        <div className="w-2/3 ml-2 text-xs sm:text-base">
-          <Select>
-            <SelectTrigger className="border-0 bg-stone-900">
-              <SelectValue placeholder="Youtube Video?" />
-            </SelectTrigger>
-            <SelectContent>
-              {!isLoading &&
-                data.videos.map((video: any) => (
-                  <SelectItem
-                    value={video.url}
-                    key={video.url}
-                    className="text-xs sm:text-base"
-                  >
-                    {video.title}
-                  </SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
+        <div className="w-1/3 ml-2 text-xs sm:text-base text-stone-200 bg-stone-800">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-[280px] justify-start text-left font-normal text-stone-200",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4 text-stone-200" />
+                {date ? format(date, "PPP") : <span>Pick a date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
     </div>
@@ -166,13 +172,13 @@ const SearchResults = ({ results }: { results: SearchResults }) => {
   return (
     <div className="flex flex-col w-full my-5 space-y-5 text-stone-400">
       <div>
-        <div className="text-2xl text-blue-300 font-semibold">Summary</div>
+        <div className="text-2xl text-stone-300 font-semibold">Summary</div>
         {summaryLines?.map((line) => (
           <div className="italic text-sm sm:text-base">{line}</div>
         ))}
       </div>
       <div className="space-y-4">
-        <div className="text-2xl text-blue-300 font-semibold">References</div>
+        <div className="text-2xl font-semibold text-stone-300">References</div>
         {references?.map((ref) => (
           <ReferenceCard {...ref} />
         ))}
@@ -190,13 +196,14 @@ export const ReferenceCard = ({
   line,
   video_url,
   id,
+  title,
   timestamp,
 }: SearchReference) => {
   return (
     <Card key={id} className="bg-stone-900 border-0 ring-0">
       <CardHeader>
-        <CardTitle className="text-blue-200">Context</CardTitle>
-        <CardDescription>References to the youtube video...</CardDescription>
+        <CardTitle className="text-stone-300">Context</CardTitle>
+        <CardDescription className="text-orange-600">{title}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4 text-stone-400 text-sm sm:text-base">
         <div className="italic">{line}</div>
