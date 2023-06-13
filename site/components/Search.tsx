@@ -18,6 +18,7 @@ import { Label } from "./ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Separator } from "./ui/separator";
 import { Slider } from "./ui/slider";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 interface SearchResults {
   summary?: string;
@@ -49,7 +50,7 @@ export const Search = () => {
     similarity: 3,
     explainability: 1,
     date: {
-      from: addDays(new Date(), -30),
+      from: addDays(new Date(), -90),
       to: new Date(),
     },
     isLoading: false,
@@ -111,8 +112,8 @@ export const SearchInput = ({
           )}
           value={searchParams.query}
           onChange={(e) => {
-            setSearchParams({ ...searchParams, query: e.target.value });
             setResults({});
+            setSearchParams({ ...searchParams, query: e.target.value });
           }}
           placeholder="What is the RTX4060ti review about?"
         />
@@ -159,7 +160,55 @@ export const SearchInput = ({
           </div>
         </div>
         {/* video selector */}
-        <div className={cn("ml-2 text-xs sm:text-base")}>
+        <div
+          className={cn(
+            "flex flex-col items-end gap-3",
+            "ml-2 text-xs sm:text-base"
+          )}
+        >
+          <Tabs
+            defaultValue="last-3m"
+            className="rounded-lg"
+            onValueChange={(e) => {
+              let lookback: number;
+              switch (e) {
+                case "last-m":
+                  lookback = 30;
+                  break;
+                case "last-3m":
+                  lookback = 90;
+                  break;
+                case "last-year":
+                  lookback = 365;
+                  break;
+                case "all-time":
+                  lookback = 365 * 20;
+                  break;
+                default:
+                  lookback = 30;
+              }
+              setSearchParams({
+                ...searchParams,
+                date: {
+                  from: addDays(new Date(), -lookback),
+                  to: new Date(),
+                },
+              });
+            }}
+          >
+            <TabsList className="bg-stone-800 text-orange-500">
+              <TabsTrigger
+                value="last-m"
+                className="bg-stone-800 text-orange-500"
+              >
+                Last Month
+              </TabsTrigger>
+              <TabsTrigger value="last-3m">Last 3 Months</TabsTrigger>
+              <TabsTrigger value="last-year">Last Year</TabsTrigger>
+              <TabsTrigger value="all-time">All time</TabsTrigger>
+            </TabsList>
+          </Tabs>
+
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -168,6 +217,7 @@ export const SearchInput = ({
                 className={cn(
                   "justify-start text-left font-normal",
                   "text-xs sm:text-base",
+                  "w-full",
                   !searchParams.date && "text-muted-foreground",
                   "bg-stone-800 hover:bg-stone-900 border-none hover:text-stone-200"
                 )}
