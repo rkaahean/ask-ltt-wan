@@ -158,13 +158,13 @@ export const SearchInput = ({
       </div>
       <div
         className={cn(
-          "flex flex-col items-start gap-3 w-1/2",
+          "flex flex-col items-center gap-3 w-full",
           "text-xs sm:text-base"
         )}
       >
         <Tabs
           defaultValue="last-3m"
-          className="rounded-lg w-full"
+          className="rounded-lg"
           onValueChange={(e) => {
             let lookback: number;
             switch (e) {
@@ -207,7 +207,7 @@ export const SearchInput = ({
               className={cn(
                 "justify-start text-left font-normal",
                 "text-xs sm:text-base",
-                "w-full",
+                "w-1/2",
                 !searchParams.date && "text-muted-foreground",
                 "bg-stone-800 hover:bg-stone-900 border-none hover:text-stone-200"
               )}
