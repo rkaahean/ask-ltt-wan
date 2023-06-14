@@ -97,7 +97,7 @@ export const SearchInput = ({
   handleSearchQuery: any;
 }) => {
   return (
-    <div className="flex flex-col w-full mb-10 gap-10 text-stone-200">
+    <div className="flex flex-col w-full mb-10 gap-10 text-stone-200 items-center">
       <div className="flex flex-row w-full items-center justify-between space-x-5">
         <Button
           className="bg-red-900 hover:bg-red-950 text-xs sm:text-base"

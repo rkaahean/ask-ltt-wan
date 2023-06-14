@@ -32,7 +32,16 @@ export default async function Home() {
         ask-wan
       </div>
       <div className="italic text-stone-500 mb-3 sm:mb-10">
-        Ask questions regarding the conversations in the WAN show!
+        Ask questions regarding conversations in the WAN show.
+        <br />
+        You can find the full list of trasnscribed videos{" "}
+        <a
+          href="https://github.com/rkaahean/ask-ltt-wan/tree/main/data/transcribed"
+          target="_blank"
+          className="text-orange-500 hover:text-orange-600 font-bold"
+        >
+          here.
+        </a>
       </div>
       <Search />
     </main>
