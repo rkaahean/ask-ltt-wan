@@ -1,10 +1,9 @@
 // import pgvector from 'pgvector/utils'
 import { Search, SearchQuery } from "@/components/Search";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
+import { Prisma } from "@prisma/client";
 import classNames from "classnames";
 import { Configuration, OpenAIApi } from "openai";
-
-const prisma = new PrismaClient();
 
 export interface Neighbour {
   id: number;
@@ -73,7 +72,7 @@ export const getNearestNeighbors = async (
   embedding: number[],
   params: SearchQuery
 ): Promise<Neighbour[]> => {
-  const neighbors: Neighbour[] = await prisma.$queryRaw`
+  const neighbors: Neighbour[] = await db.$queryRaw`
     SELECT 
       docs.id, 
       embedding::text, 
@@ -106,7 +105,7 @@ export const getAdditionalNeighbours = async (
   console.log("Number of neighbours: ", neighbours.length);
   for (const neighbour of neighbours) {
     console.log("Fetching info for neighbour...", neighbour.id);
-    const contextNeighbours: Neighbour[] = await prisma.$queryRaw(
+    const contextNeighbours: Neighbour[] = await db.$queryRaw(
       Prisma.sql`
           SELECT
             id,
@@ -129,7 +128,7 @@ export const getAdditionalNeighbours = async (
 };
 
 export const getVideoUrls = async () => {
-  const distinctVideoUrls = await prisma.videos.findMany({
+  const distinctVideoUrls = await db.videos.findMany({
     select: {
       title: true,
       url: true,
