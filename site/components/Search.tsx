@@ -108,7 +108,7 @@ export const SearchInput = ({
         <Input
           className={cn(
             "bg-stone-900 w-full focus-visible:ring-1 focus-visible:ring-orange-900 text-xs sm:text-base",
-            "text-stone-500"
+            "text-orange-500"
           )}
           value={searchParams.query}
           onChange={(e) => {
@@ -162,6 +162,9 @@ export const SearchInput = ({
           "text-xs sm:text-base"
         )}
       >
+        <div className="text-stone-600 italic text-xs sm:text-sm">
+          Date range to search for?
+        </div>
         <Tabs
           defaultValue="last-3m"
           className="rounded-lg"
