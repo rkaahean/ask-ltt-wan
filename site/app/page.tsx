@@ -150,7 +150,7 @@ export const getQuerySummary = async (neighbors: Neighbour[]) => {
     const openai = new OpenAIApi(config);
     // ask chat gpt about query
     const response = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4-0314",
       messages: [
         {
           role: "system",
